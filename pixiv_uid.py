@@ -31,6 +31,11 @@ downloaded_images_count = 0
 
 # 遍历 PID，访问每个作品的页面信息
 for pid in pids:
+    # 如果 pid 已存在于已下载的字典中，跳过该图片
+    if pid in downloaded_pids:
+        print(f"PID {pid} 已下载，跳过...")
+        continue
+
     print(f"正在处理 PID: {pid}")
 
     pages_url = f"https://www.pixiv.net/ajax/illust/{pid}/pages"
@@ -54,5 +59,12 @@ for pid in pids:
 
         # 随机等待 1-4 秒
         time.sleep(random.randint(1, 4))
+
+    # 将下载过的 pid 添加到已下载字典中
+    downloaded_pids[pid] = True
+
+# 下载完成后，更新已下载的 pid 列表到 JSON 文件
+with open(downloaded_pids_file, 'w') as f:
+    json.dump(downloaded_pids, f)
 
 print(f"已完成下载，共下载 {downloaded_images_count} 张图片。")
